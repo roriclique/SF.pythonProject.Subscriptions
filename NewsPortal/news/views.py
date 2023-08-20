@@ -92,13 +92,15 @@ class PostDelete(PermissionRequiredMixin, LoginRequiredMixin, DeleteView):
 def subscribe(request):
     if request.method == 'POST':
         topics_id = request.POST.get('topics_id')
-        topic = Topics.objects.get(id=topics_id)
+        topic = Topics.objects.filter(id=topics_id).get()
         action = request.POST.get('action')
 
         if action == 'subscribe':
-            Subscription.objects.create(user=request.user, topics=topic)
+            subscribed = Subscription.objects.create(user=request.user, topics=topic)
+            return render(subscribed, 'success_message.html')
         elif action == 'unsubscribe':
-            Subscription.objects.filter(user=request.user, topics=topic).delete()
+            unsubscribed = Subscription.objects.filter(user=request.user, topics=topic).delete()
+            return render(unsubscribed, reverse_lazy('search_all_posts'))
 
     topics_with_subscriptions = Topics.objects.annotate(
         user_subscribed=Exists(Subscription.objects.filter(user=request.user, topics=OuterRef('pk')))).order_by('name')

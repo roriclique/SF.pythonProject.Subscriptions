@@ -42,7 +42,7 @@
                 <p>{{ t.name }}
                 <form method="post">
                     {% csrf_token %}
-                    <input type="hidden" name="name_id" value="{{ name.id }}"/>
+                    <input type="hidden" name="Topics.name_id" value="{{ Topics.name.id }}"/>
                     {% if t.user_subscribed %}
                     <button disabled>Subscribe</button>
                     <button value="unsubscribe">Unsubscribe</button>
