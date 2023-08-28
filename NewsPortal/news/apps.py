@@ -1,5 +1,4 @@
 from django.apps import AppConfig
-from . import signals
 
 
 class NewsConfig(AppConfig):
@@ -7,7 +6,7 @@ class NewsConfig(AppConfig):
     name = 'news'
 
     def ready(self):
-        return signals
+        from . import signals
 
 
 
