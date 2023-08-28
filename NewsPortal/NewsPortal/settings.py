@@ -109,6 +109,8 @@ DEFAULT_FROM_EMAIL = "example@yandex.ru"
 
 SERVER_EMAIL = "cliqueror@yandex.ru"
 
+SITE_URL = 'http://http://127.0.0.1:8000/'
+
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 

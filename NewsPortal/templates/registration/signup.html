@@ -40,7 +40,7 @@
                 <h1>Sign up</h1>
                 </div>
               <form method="post">
-                {% csrf_token %}
+                  {% csrf_token %}
                   {{ accounts.form.as_p }}
                   <input type="submit" value="Sing up">
               </form>

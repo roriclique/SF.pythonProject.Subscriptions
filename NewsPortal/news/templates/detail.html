@@ -6,7 +6,7 @@
 <i>{{ PostDetails.dateCreation|date:"d.m.Y" }}</i>
 <p><i>{{ PostDetails.dateCreation|date:"H:i:s" }}</i></p>
 <p>{{ PostDetails.text|censor }}</p>
-<p>Topic: <a href="{% url 'sub_scribe' %}">{{ PostDetails.postTopic.name }}</a></p>
+<p><b>Topic:</b> {{ PostDetails.postTopic.name }}</p>
 {% if perms.news.change_post or perms.news.delete_post %}
 <a href="{{ PostDetails.update_url }}">Update</a> | <a href="{{ PostDetails.delete_url }}">Delete</a>
 {% endif %}

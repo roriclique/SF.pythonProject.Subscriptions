@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from .models import *
 from django.urls import reverse_lazy
 from django.views.generic import *
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from.filters import PostFilter
 from.forms import PostForm
 
@@ -87,21 +87,30 @@ class PostDelete(PermissionRequiredMixin, LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('Default')
 
 
-@login_required
+class TopicsListView(ListView):
+    template_name = 'topics_list.html'
+    model = Post
+    context_object_name = 'Topicslist'
+
+    def get_queryset(self):
+        self.postTopic = get_object_or_404(Topics, id=self.kwargs['pk'])
+        queryset = Post.objects.filter(postTopic=self.postTopic).order_by('-dateCreation')
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_not_subscriber'] = self.request.user not in self.postTopic.subs.all()
+        context['postTopic'] = self.postTopic
+        return context
+
+
 @csrf_protect
-def subscribe(request):
-    if request.method == 'POST':
-        topics_id = request.POST.get('topics_id')
-        topic = Topics.objects.filter(id=topics_id).get()
-        action = request.POST.get('action')
+def sub_scriber(request, pk):
+    user = request.user
+    topic = Topics.objects.get(id=pk)
+    topic.subs.add(user)
 
-        if action == 'subscribe':
-            subscribed = Subscription.objects.create(user=request.user, topics=topic)
-            return render(subscribed, 'success_message.html')
-        elif action == 'unsubscribe':
-            unsubscribed = Subscription.objects.filter(user=request.user, topics=topic).delete()
-            return render(unsubscribed, reverse_lazy('search_all_posts'))
+    message = 'You have successfully subscribed to the topic: '
+    return render(request, 'subscriptions.html', {'topic': topic, 'message': message})
 
-    topics_with_subscriptions = Topics.objects.annotate(
-        user_subscribed=Exists(Subscription.objects.filter(user=request.user, topics=OuterRef('pk')))).order_by('name')
-    return render(request, 'subscriptions.html', {'topics': topics_with_subscriptions})
+

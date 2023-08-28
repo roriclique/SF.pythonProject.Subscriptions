@@ -26,6 +26,7 @@ class Author(models.Model):
 
 class Topics(models.Model):
     name = models.CharField(max_length=128, unique=True)
+    subs = models.ManyToManyField(User, related_name='subscriptions')
 
     def __str__(self):
         return '{}'.format(self.name)
@@ -90,6 +91,4 @@ class Comment(models.Model):
         self.save()
 
 
-class Subscription(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subscriptions')
-    topics = models.ForeignKey(Topics, on_delete=models.CASCADE, related_name='subscriptions')
+
