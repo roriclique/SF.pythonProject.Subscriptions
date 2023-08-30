@@ -49,7 +49,8 @@
                 {% for n in Posts %}
                 <p><i><b>{{ n.title|censor }}</b></i> {{ n.dateCreation|date:"d.m.Y" }}</p>
                 <p>{{ n.dateCreation|date:"H:i:s" }}</p>
-                <p>{{ n.text|truncatechars:20|censor }}</p>
+                <p>{{ n.text|truncatechars:128|censor }}</p>
+                <p>Topic: <a href="{% url 'topics' n.postTopic.id %}">{{ n.postTopic.name }}</a></p>
                 <a href="{{ n.get_absolute_url }}">⇨ Read more</a>
                 {% endfor %}
                     <p>___________________________</p>

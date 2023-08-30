@@ -1,14 +1,14 @@
 from django.core.mail import EmailMultiAlternatives
-from django.db.models.signals import m2m_changed
+from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
 from django.template.loader import render_to_string
 
 from .models import *
-from ..NewsPortal import settings
+from django.conf import settings
 
 
 def send_notifications(preview, pk, title, subs):
-    html_context = render_to_string(
+    html_content = render_to_string(
         'post_created_email.html',
         {'text': preview,
          'link': f'{settings.SITE_URL}/news/{pk}',
@@ -23,20 +23,21 @@ def send_notifications(preview, pk, title, subs):
 
     )
 
-    msg.attach_alternative(html_context, 'text/html')
+    msg.attach_alternative(html_content, 'text/html')
     msg.send()
 
 
-@receiver(m2m_changed, sender=Post)
+@receiver(m2m_changed, sender=Topics)
 def notify_created_post(sender, instance, **kwargs):
-    if kwargs['action'] == 'post_save':
-        subscriptions = instance.postTopics.all()
+    if kwargs['action'] == 'post_add':
+        topics = instance.postTopics.all()
         subs: list[str] = []
-        for t in subscriptions:
+        print(f'{subs = }')
+        for t in topics:
             subs += t.subs.all()
 
         subs = [s.email for s in subs]
+        print(f'{subs = }')
 
         send_notifications(instance.preview(), instance.pk, instance.title, subs)
-
 

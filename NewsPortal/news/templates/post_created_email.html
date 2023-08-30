@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>NewsPortal: For our subs</title>
-  {%  load filter %}
+    {%  load filter %}
 </head>
 <body>
 <h1>Hello! The new post by subscribed topic is already here >> </h1>
-<p>{{ title }}</p>
-<p>{{ text|truncatechars:50|censor }}</p>
+{% for n in Posts %}
+<p><i><b>{{ n.title|censor }}</b></i> {{ n.dateCreation|date:"d.m.Y" }}</p>
+<p>{{ n.dateCreation|date:"H:i:s" }}</p>
+<p>{{ n.text|truncatechars:50|censor }}</p>
 <a>href="{{ link }}"</a>
 </body>
 </html>
