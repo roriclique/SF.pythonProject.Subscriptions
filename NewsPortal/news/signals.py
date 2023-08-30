@@ -41,3 +41,27 @@ def notify_created_post(sender, instance, **kwargs):
 
         send_notifications(instance.preview(), instance.pk, instance.title, subs)
 
+
+
+
+# Есть такое вариант на основе проекта интернет-магазина. Но какой из них корректнее?
+# По условиям итогового задания нужно использовать post_save, но в вебинарах разбирают другой вариант
+
+
+    # @receiver(post_save, sender=Post)
+    # def product_created(instance, created, **kwargs,):
+    #     if not created:
+    #         return
+    #
+    #     emails = User.objects.filter(
+    #         user_subscriptions=instance.postTopic.subs
+    #     ).values_list('email', flat=True)
+    #
+    #     html_content = render_to_string(
+    #         'post_created_email.html',
+    #         {'link': f'{settings.SITE_URL}/news/{instance.get_absolute_url()}'}
+    #     )
+    #     for email in emails:
+    #         msg = EmailMultiAlternatives(None, [email])
+    #         msg.attach_alternative(html_content, "text/html")
+    #         msg.send()
